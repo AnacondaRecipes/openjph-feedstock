@@ -1,0 +1,55 @@
+{% set name = "OpenJPH" %}
+{% set version = "0.26.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/aous72/{{ name|lower }}/archive/{{ version }}.tar.gz
+  sha256: 29de006da7f1e8cf0cd7c3ec424cf29103e465052c00b5a5f0ccb7e1f917bb3f
+  patches:
+    # It is still difficult to use these new style tests on windows
+    # https://github.com/prefix-dev/rattler-build/issues/1116
+    - windows_lib_so_name.patch
+    # We use too old of an stdlibc for this definition to be defined
+    - fix_aarch_old_stdlibc.patch
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - {{ stdlib('c') }}
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - cmake
+    - ninja-base
+  host:
+    - libtiff
+  run_exports:
+    - {{ pin_subpackage('openjph', max_pin='x.x') }}
+
+test:
+  commands:
+    - test -f ${PREFIX}/lib/libopenjph${SHLIB_EXT}                         # [unix]
+    - test -f ${PREFIX}/include/openjph/ojph_version.h                     # [unix]
+    - test -f ${PREFIX}/include/openjph/ojph_base.h                        # [unix]
+    - if not exist %PREFIX%\Library\bin\openjph.dll exit 1                 # [win]
+    - if not exist %PREFIX%\Library\lib\openjph.lib exit 1                 # [win]
+    - if not exist %PREFIX%\Library\include\openjph\ojph_base.h exit 1     # [win]
+    - if not exist %PREFIX%\Library\include\openjph\ojph_version.h exit 1  # [win]
+
+about:
+  home: https://github.com/aous72/OpenJPH
+  license: BSD-2-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: Open source implementation of High-throughput JPEG2000 (HTJ2K).
+  description: Open source implementation of High-throughput JPEG2000 (HTJ2K).
+  dev_url: https://github.com/aous72/OpenJPH
+  doc_url: https://github.com/aous72/OpenJPH
+
+extra:
+  recipe-maintainers:
+    - hmaarrfk
