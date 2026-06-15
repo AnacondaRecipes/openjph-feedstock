@@ -1,5 +1,5 @@
 {% set name = "OpenJPH" %}
-{% set version = "0.26.3" %}
+{% set version = "0.27.4" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/aous72/{{ name|lower }}/archive/{{ version }}.tar.gz
-  sha256: 29de006da7f1e8cf0cd7c3ec424cf29103e465052c00b5a5f0ccb7e1f917bb3f
+  sha256: 4bd6c75cc74721b1a40c3e07206621d0c953d0b21e9f63c9982a8ecb4a6f326d
   patches:
     # It is still difficult to use these new style tests on windows
     # https://github.com/prefix-dev/rattler-build/issues/1116
@@ -26,7 +26,7 @@ requirements:
     - cmake
     - ninja-base
   host:
-    - libtiff
+    - libtiff {{ libtiff }}
   run_exports:
     - {{ pin_subpackage('openjph', max_pin='x.x') }}
 
